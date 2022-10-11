@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.test_play).setOnClickListener {
             mEasyMusicServiceHelper.transportControls.playFromMediaId("testId", Bundle())
+            // test
         }
     }
 }
