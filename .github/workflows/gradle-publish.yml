@@ -44,4 +44,4 @@ jobs:
         arguments: publish
       env:
         USERNAME: Luo-DH
-        TOKEN: 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
+        TOKEN: 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
