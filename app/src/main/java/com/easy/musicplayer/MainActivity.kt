@@ -7,6 +7,10 @@ import com.easy.lib.musicservice.EasyMusicServiceHelper
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        const val TAG = "MainActivityMainActivity"
+    }
+
     private lateinit var mEasyMusicServiceHelper: EasyMusicServiceHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +21,6 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.test_play).setOnClickListener {
             mEasyMusicServiceHelper.transportControls.playFromMediaId("testId", Bundle())
-            // test test test test
         }
     }
 }

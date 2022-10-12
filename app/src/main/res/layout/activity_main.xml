@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <fragment
+        android:id="@+id/easy_song_list_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.easy.musicplayer.ui.EasySongListFragment" />
+
     <Button
         android:id="@+id/test_play"
         android:layout_width="match_parent"
