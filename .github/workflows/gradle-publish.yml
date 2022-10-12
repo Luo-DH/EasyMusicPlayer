@@ -1,47 +1,37 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
-
-name: Gradle Package
+name: Android CI
 
 on:
   push:
-    branches: [master]
-  release:
-    types: [created]
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+      - uses: actions/checkout@v2
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: build
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-    - name: Publish to GitHub Packages
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: publish
-      env:
-        USERNAME: Luo-DH
-        TOKEN: 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
+      - name: Build with Gradle
+        run: ./gradlew app:assembleRelease
+
+      - name: Upload apk to pgyer.com
+        run: find ${{ github.workspace }}/app/build/outputs/apk/release/ -name "*.apk*" -type f -exec curl -F "file=@{}" -F "uKey=${{ secrets.PGYER_UKEY }}" -F "_api_key=${{ secrets.PGYER_API_KEY }}" https://upload.pgyer.com/apiv1/app/upload  \;
+
+      - name: Upload apk to artifact
+        uses: actions/upload-artifact@master
+        if: always()
+        with:
+          name: lottery_app
+          path: ${{ github.workspace }}/app/build/outputs/apk/release/*.apk
